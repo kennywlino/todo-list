@@ -1,29 +1,29 @@
-class ToDo {
+export default class ToDo {
     constructor(title, description, dueDate, status) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.status = status;
+        this._title = title;
+        this._description = description;
+        this._dueDate = dueDate;
+        this._status = status;
     }
 
     get title() {
-        return this.title;
+        return this._title;
     }
 
     set title(value) {
-        this.title = value;
+        this._title = value;
     }
 
     get description() {
-        return this.description;
+        return this._description;
     }
 
     set description(value) {
-        return this.description = value;
+        return this._description = value;
     }
 
     get dueDate() {
-        return this.dueDate;
+        return this._dueDate;
     }
 
     set dueDate(date) {
@@ -31,10 +31,10 @@ class ToDo {
     }
 
     get status() {
-        return this.status;
+        return this._status;
     }
 
     set status(value) {
-        this.status = value;
+        this._status = value;
     }
 }

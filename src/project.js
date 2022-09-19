@@ -1,22 +1,22 @@
-class Project {
+export default class Project {
     constructor(title) {
-        this.title = title;
-        this.tasks = [];
+        this._title = title;
+        this._tasks = [];
     }
 
     get title() {
-        return this.title;
+        return this._title;
     }
 
     set title(value) {
-        this.title = value;
+        this._title = value;
     }
 
     get tasks() {
-        return this.tasks;
+        return this._tasks;
     }
 
     set tasks(value) {
-        this.tasks.push(value);
+        this._tasks.push(value);
     }
 }
