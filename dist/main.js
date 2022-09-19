@@ -1,0 +1,1 @@
+alert("Confirming webpack setup.");
