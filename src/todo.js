@@ -1,7 +1,7 @@
 export default class ToDo {
-    constructor(title, description, dueDate, status) {
+    constructor(title, details, dueDate, status) {
         this._title = title;
-        this._description = description;
+        this._details = details;
         this._dueDate = dueDate;
         this._status = status;
     }
@@ -14,12 +14,12 @@ export default class ToDo {
         this._title = value;
     }
 
-    get description() {
-        return this._description;
+    get details() {
+        return this._details;
     }
 
     set description(value) {
-        return this._description = value;
+        return this._details = value;
     }
 
     get dueDate() {

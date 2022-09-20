@@ -1,8 +1,59 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 .header {
     color: red;
+}
+
+.add-todo-button-div .add-button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.todo-popup {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid black;
+    border-radius: 10px;
+    z-index: 2;
+    width: 750px;
+    height: 175px;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.todo-form {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.todo-input, .details-input {
+    width: 715px;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.action-buttons {
+    padding: 10px 15px;
+    align-self: flex-end;
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 5px 10px;
 }
