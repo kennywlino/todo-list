@@ -18,6 +18,32 @@
     gap: 10px;
 }
 
+.header .dropdown {
+    cursor: pointer;
+}
+
+.input-and-buttons-div {
+    position: relative;
+}
+
+.input-and-buttons-div input{
+    height: 40px;
+}
+
+.input-and-buttons-div .buttons-div {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+    display: flex;
+    gap: 5px;
+
+}
+
+.input-and-buttons-div .buttons-div button {
+    cursor: pointer;
+}
+
 .add-todo-button-div .add-button {
     cursor: pointer;
     border: none;
@@ -70,4 +96,10 @@
 
 .action-buttons button {
     padding: 5px 10px;
+}
+
+.footer {
+    
+    /* height: 50px;
+    background: green; */
 }

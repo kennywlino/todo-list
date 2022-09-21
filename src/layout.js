@@ -7,10 +7,13 @@ function createHeader() {
     const header = document.createElement("header");
     header.classList.add("header");
 
+    // holds dropdown button and title headline
     const leftDiv = document.createElement("div");
     leftDiv.classList.add("left-div");
 
     const dropDownButton = document.createElement("button");
+    dropDownButton.classList.add("dropdown");
+    dropDownButton.setAttribute("type", "button");
     dropDownButton.textContent = "#";
 
     // title headline
@@ -22,8 +25,18 @@ function createHeader() {
 
     header.appendChild(leftDiv);
     
+    // quick ToDo bar
+    const quickTodoDiv = document.createElement("div");
+    quickTodoDiv.classList.add("quick-todo-div");
+
+    const quickTodoForm = createQuickTodoForm();
+    
+    quickTodoDiv.appendChild(quickTodoForm);
+    
+    header.appendChild(quickTodoDiv);
+
     // new ToDo button
-    header.appendChild(createAddTodoButton());
+    //header.appendChild(createAddTodoButton());
 
     return header;
 }
@@ -35,6 +48,7 @@ function createAddTodoButton() {
     div.classList.add("add-todo-button-div");
     
     const button = document.createElement("button");
+    button.setAttribute("type", "button");
     button.classList.add("add-button");
     button.textContent = "+";
 
@@ -47,18 +61,14 @@ function createAddTodoButton() {
 }
 
 function addTodo() {
-    alert("adding todo");
     const todoPopUp = document.querySelector(".todo-popup");
     todoPopUp.classList.add("active");
 }
 
-// defines form to take in user input for ToDo items
-function createTodoForm() {
-    const div = document.createElement("div");
-    div.classList.add("todo-popup");
-    
-    // ToDo Form
 
+// creates the basic ToDo form to use both standalone in the header
+// and in the extended ToDo form containing details and due date
+function createBasicTodoForm() {
     const todoForm = document.createElement("form");
     todoForm.classList.add("todo-form");
 
@@ -68,13 +78,70 @@ function createTodoForm() {
     todoInput.setAttribute("type", "text");
     todoInput.setAttribute("name", "todo");
     todoInput.setAttribute("placeholder", "Add a ToDo Item");
+    
+    todoForm.appendChild(todoInput);
 
+    return todoForm;
+}
+
+// creates the quick ToDo form used in the header to take in
+// a new ToDo *without* details and due date
+function createQuickTodoForm() {
+    const todoForm = createBasicTodoForm();
+    todoForm.classList.add("quick");
+    
+    const todoFormInput = todoForm.querySelector(".todo-input");
+
+    // create a new div to wrap around the ToDo Form and buttons within the form
+    // and moves the input into this div
+
+    const inputAndButtonsDiv = document.createElement("div");
+    inputAndButtonsDiv.classList.add("input-and-buttons-div");
+
+    todoFormInput.parentNode.insertBefore(inputAndButtonsDiv, todoFormInput);
+
+    inputAndButtonsDiv.appendChild(todoFormInput);
+
+    // buttons for details (extended ToDo) and adding ToDo
+
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.classList.add("buttons-div");
+
+    const detailsButton = document.createElement("button");
+    detailsButton.setAttribute("type", "button");
+    detailsButton.classList.add("details-button");
+    detailsButton.textContent = "Details";
+
+    const addButton = document.createElement("button");
+    addButton.setAttribute("type", "button");
+    addButton.classList.add("add-button");
+    addButton.textContent = "Add";
+
+    buttonsDiv.append(detailsButton);
+    buttonsDiv.append(addButton);
+
+    inputAndButtonsDiv.appendChild(buttonsDiv);
+
+    return todoForm;
+}
+    
+// defines extended form to take in user input for ToDo items
+// including details and due date
+function createExtendedTodoForm() {
+    const div = document.createElement("div");
+    div.classList.add("todo-popup");
+    
+    // ToDo Form
+
+    const todoForm = createBasicTodoForm();
+
+    // extended ToDo form details
     const detailsInput = document.createElement("input");
     detailsInput.classList.add("details-input");
 
     detailsInput.setAttribute("type", "text");
     detailsInput.setAttribute("name", "details");
-    detailsInput.setAttribute("placeholder", "Details (optional)");
+    detailsInput.setAttribute("placeholder", "Details");
 
     const dueDateInput = document.createElement("input");
     dueDateInput.classList.add("due-date-input");
@@ -82,7 +149,6 @@ function createTodoForm() {
     dueDateInput.setAttribute("type", "date");
     dueDateInput.setAttribute("value", "2022-09-20");
 
-    todoForm.appendChild(todoInput);
     todoForm.appendChild(detailsInput);
     todoForm.appendChild(dueDateInput);
 
@@ -131,7 +197,7 @@ function setUpPage() {
     const content = document.getElementById("content");
     content.appendChild(createHeader());
     content.appendChild(createSidebar());
-    content.appendChild(createTodoForm());
+    content.appendChild(createExtendedTodoForm());
     content.appendChild(createFooter());
 }
 
