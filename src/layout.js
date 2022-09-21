@@ -7,11 +7,22 @@ function createHeader() {
     const header = document.createElement("header");
     header.classList.add("header");
 
+    const leftDiv = document.createElement("div");
+    leftDiv.classList.add("left-div");
+
+    const dropDownButton = document.createElement("button");
+    dropDownButton.textContent = "#";
+
+    // title headline
     const pageName = document.createElement("h1");
     pageName.textContent = "ToDo List";
 
-    header.appendChild(pageName);
+    leftDiv.appendChild(dropDownButton);
+    leftDiv.appendChild(pageName);
+
+    header.appendChild(leftDiv);
     
+    // new ToDo button
     header.appendChild(createAddTodoButton());
 
     return header;
@@ -37,6 +48,8 @@ function createAddTodoButton() {
 
 function addTodo() {
     alert("adding todo");
+    const todoPopUp = document.querySelector(".todo-popup");
+    todoPopUp.classList.add("active");
 }
 
 // defines form to take in user input for ToDo items
@@ -96,12 +109,30 @@ function createTodoForm() {
     return div;
 }
 
+// defines the sidebar containing links to "Today", 
+// list of projects, etc.
+function createSidebar() {
+    const sidebarDiv = document.createElement("div");
+    sidebarDiv.classList.add("sidebar");
+
+    return sidebarDiv;
+}
+
+function createFooter() {
+    const footerDiv = document.createElement("div");
+    footerDiv.classList.add("footer");
+
+    return footerDiv;
+}
+
 // sets up the entire webpage with default view
 // e.g. sidebar closed and only today's TODOs displayed
 function setUpPage() {
     const content = document.getElementById("content");
     content.appendChild(createHeader());
+    content.appendChild(createSidebar());
     content.appendChild(createTodoForm());
+    content.appendChild(createFooter());
 }
 
 export default setUpPage;

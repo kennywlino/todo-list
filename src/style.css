@@ -5,7 +5,17 @@
 }
 
 .header {
-    color: red;
+    padding: 10px 15px;
+    height: 75px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: green;
+}
+
+.left-div {
+    display: flex;
+    gap: 10px;
 }
 
 .add-todo-button-div .add-button {
@@ -28,9 +38,13 @@
     width: 750px;
     height: 175px;
     max-width: 60%;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.todo-popup.active {
+    display: flex;
 }
 
 .todo-form {
