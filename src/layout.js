@@ -41,31 +41,6 @@ function createHeader() {
     return header;
 }
 
-// defines an "Add ToDo" button to include within the header
-// opens a pop-up window for user to add new ToDo on-click
-function createAddTodoButton() {
-    const div = document.createElement("div");
-    div.classList.add("add-todo-button-div");
-    
-    const button = document.createElement("button");
-    button.setAttribute("type", "button");
-    button.classList.add("add-button");
-    button.textContent = "+";
-
-    // pop-up menu on-click
-    button.addEventListener("click", addTodo);
-
-    div.appendChild(button);
-    
-    return div;
-}
-
-function addTodo() {
-    const todoPopUp = document.querySelector(".todo-popup");
-    todoPopUp.classList.add("active");
-}
-
-
 // creates the basic ToDo form to use both standalone in the header
 // and in the extended ToDo form containing details and due date
 function createBasicTodoForm() {
@@ -91,9 +66,11 @@ function createQuickTodoForm() {
     todoForm.classList.add("quick");
     
     const todoFormInput = todoForm.querySelector(".todo-input");
+    todoFormInput.setAttribute("id", 'todo-quick');
 
     // create a new div to wrap around the ToDo Form and buttons within the form
-    // and moves the input into this div
+    // and moves the input into this div; 
+    // this allows us to overlay the details/add button in CSS
 
     const inputAndButtonsDiv = document.createElement("div");
     inputAndButtonsDiv.classList.add("input-and-buttons-div");
@@ -111,6 +88,7 @@ function createQuickTodoForm() {
     detailsButton.setAttribute("type", "button");
     detailsButton.classList.add("details-button");
     detailsButton.textContent = "Details";
+    detailsButton.addEventListener("click", addDetailedTodo);
 
     const addButton = document.createElement("button");
     addButton.setAttribute("type", "button");
@@ -124,16 +102,35 @@ function createQuickTodoForm() {
 
     return todoForm;
 }
+
+// EL function used to open detailed ToDo menu 
+// and carry over input from quick ToDo if existing
+function addDetailedTodo() {
+    const todoPopUp = document.querySelector(".todo-popup");
     
+    let quickTodoInput = document.getElementById("todo-quick");
+    let detailedTodoInput = document.getElementById("todo-detailed");
+    if (quickTodoInput.value != '') {
+        detailedTodoInput.value = quickTodoInput.value;
+        quickTodoInput.value = '';
+    }
+
+    todoPopUp.classList.add("active");
+}
+
 // defines extended form to take in user input for ToDo items
 // including details and due date
-function createExtendedTodoForm() {
+function createDetailedTodoForm() {
     const div = document.createElement("div");
     div.classList.add("todo-popup");
     
     // ToDo Form
 
     const todoForm = createBasicTodoForm();
+    todoForm.classList.add("detailed");
+
+    const todoFormInput = todoForm.querySelector(".todo-input");
+    todoFormInput.setAttribute("id", 'todo-detailed');
 
     // extended ToDo form details
     const detailsInput = document.createElement("input");
@@ -162,6 +159,7 @@ function createExtendedTodoForm() {
     const cancelButton = document.createElement("button");
     cancelButton.classList.add("cancel-button");
     cancelButton.textContent = "Cancel";
+    cancelButton.addEventListener("click", closeDetailedTodo);
 
     const addButton = document.createElement("button");
     addButton.classList.add("add-button");
@@ -174,6 +172,20 @@ function createExtendedTodoForm() {
     
     return div;
 }
+
+// EL function used to close the detailed ToDo menu
+function closeDetailedTodo() {
+    const todoPopUp = document.querySelector(".todo-popup");
+
+    const detailedTodoForm = document.querySelector(".todo-form.detailed");
+    let todoInput = detailedTodoForm.querySelector(".todo-input");
+    let detailsInput = detailedTodoForm.querySelector(".details-input");
+    todoInput.value = '';
+    detailsInput.value = '';
+
+    todoPopUp.classList.remove("active");
+}
+
 
 // defines the sidebar containing links to "Today", 
 // list of projects, etc.
@@ -197,7 +209,7 @@ function setUpPage() {
     const content = document.getElementById("content");
     content.appendChild(createHeader());
     content.appendChild(createSidebar());
-    content.appendChild(createExtendedTodoForm());
+    content.appendChild(createDetailedTodoForm());
     content.appendChild(createFooter());
 }
 
