@@ -1,9 +1,9 @@
 export default class ToDo {
-    constructor(title, details, dueDate, status) {
+    constructor(title, details = '', dueDate = '', completed = false)  {
         this._title = title;
         this._details = details;
         this._dueDate = dueDate;
-        this._status = status;
+        this._completed = completed;
     }
 
     get title() {
@@ -30,11 +30,11 @@ export default class ToDo {
         this.dueDate = date;
     }
 
-    get status() {
-        return this._status;
+    get completed() {
+        return this._completed;
     }
 
-    set status(value) {
-        this._status = value;
+    set completed(value) {
+        this._completed = value;
     }
 }

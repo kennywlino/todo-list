@@ -58,6 +58,7 @@
     top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background: white;
     border: 2px solid black;
     border-radius: 10px;
     z-index: 2;
@@ -65,12 +66,26 @@
     height: 175px;
     max-width: 60%;
     display: none;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
 .todo-popup.active {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#overlay {
+    position: fixed;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .2); 
+}
+
+#overlay.active {
+    opacity: 1;
 }
 
 .todo-form {

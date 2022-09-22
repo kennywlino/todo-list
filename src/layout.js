@@ -115,6 +115,9 @@ function addDetailedTodo() {
         quickTodoInput.value = '';
     }
 
+    const overlay = document.getElementById("overlay");
+    overlay.classList.add("active");
+
     todoPopUp.classList.add("active");
 }
 
@@ -183,9 +186,11 @@ function closeDetailedTodo() {
     todoInput.value = '';
     detailsInput.value = '';
 
+    const overlay = document.getElementById("overlay");
+
+    overlay.classList.remove("active");
     todoPopUp.classList.remove("active");
 }
-
 
 // defines the sidebar containing links to "Today", 
 // list of projects, etc.
@@ -194,6 +199,19 @@ function createSidebar() {
     sidebarDiv.classList.add("sidebar");
 
     return sidebarDiv;
+}
+
+// defines the body of the page that holds main ToDo items
+function createBody() {
+
+}
+
+// defines the overlay used when opening up the detailed ToDo menu
+function createOverlay() {
+    const div = document.createElement("div");
+    div.setAttribute("id", "overlay");
+    
+    return div;
 }
 
 function createFooter() {
@@ -208,8 +226,10 @@ function createFooter() {
 function setUpPage() {
     const content = document.getElementById("content");
     content.appendChild(createHeader());
-    content.appendChild(createSidebar());
     content.appendChild(createDetailedTodoForm());
+    content.appendChild(createOverlay());
+    content.appendChild(createSidebar());
+    // content.appendChild(createBody());
     content.appendChild(createFooter());
 }
 
