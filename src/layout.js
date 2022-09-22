@@ -5,11 +5,11 @@ import './style.css';
 // defines header to display page title
 function createHeader() {
     const header = document.createElement("header");
-    header.classList.add("header");
+    header.setAttribute("id", "header");
 
     // holds dropdown button and title headline
     const leftDiv = document.createElement("div");
-    leftDiv.classList.add("left-div");
+    leftDiv.setAttribute("id", "left-div");
 
     const dropDownButton = document.createElement("button");
     dropDownButton.classList.add("dropdown");
@@ -27,7 +27,7 @@ function createHeader() {
     
     // quick ToDo bar
     const quickTodoDiv = document.createElement("div");
-    quickTodoDiv.classList.add("quick-todo-div");
+    quickTodoDiv.setAttribute("id", "quick-todo-div");
 
     const quickTodoForm = createQuickTodoForm();
     
@@ -125,7 +125,7 @@ function addDetailedTodo() {
 // including details and due date
 function createDetailedTodoForm() {
     const div = document.createElement("div");
-    div.classList.add("todo-popup");
+    div.setAttribute("id", "todo-popup");
     
     // ToDo Form
 
@@ -196,7 +196,7 @@ function closeDetailedTodo() {
 // list of projects, etc.
 function createSidebar() {
     const sidebarDiv = document.createElement("div");
-    sidebarDiv.classList.add("sidebar");
+    sidebarDiv.setAttribute("id", "sidebar");
 
     return sidebarDiv;
 }
@@ -216,7 +216,7 @@ function createOverlay() {
 
 function createFooter() {
     const footerDiv = document.createElement("div");
-    footerDiv.classList.add("footer");
+    footerDiv.setAttribute("id", "footer");
 
     return footerDiv;
 }

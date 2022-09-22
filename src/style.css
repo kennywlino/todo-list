@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-.header {
+#header {
     padding: 10px 15px;
     height: 75px;
     display: flex;
@@ -13,12 +13,12 @@
     background: green;
 }
 
-.left-div {
+#left-div {
     display: flex;
     gap: 10px;
 }
 
-.header .dropdown {
+#header .dropdown {
     cursor: pointer;
 }
 
@@ -53,7 +53,7 @@
     font-weight: bold;
 }
 
-.todo-popup {
+#todo-popup {
     position: fixed;
     top: 30%;
     left: 50%;
@@ -68,7 +68,7 @@
     display: none;
 }
 
-.todo-popup.active {
+#todo-popup.active {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
