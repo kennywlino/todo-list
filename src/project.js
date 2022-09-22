@@ -1,7 +1,7 @@
 export default class Project {
     constructor(title) {
         this._title = title;
-        this._tasks = [];
+        this._todos = [];
     }
 
     get title() {
@@ -12,11 +12,11 @@ export default class Project {
         this._title = value;
     }
 
-    get tasks() {
-        return this._tasks;
+    get todos() {
+        return this._todos;
     }
 
-    set tasks(value) {
-        this._tasks.push(value);
+    addTodo(todo) {
+        this._todos.push(todo);
     }
 }

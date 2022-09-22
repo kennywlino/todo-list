@@ -28,9 +28,13 @@
     gap: 10px;
 }
 
-#header #dropdown {
+button {
     cursor: pointer;
     z-index: 2;
+}
+
+button:hover {
+    background: yellow;
 }
 
 .input-and-buttons-div {
@@ -51,12 +55,7 @@
 
 }
 
-.input-and-buttons-div .buttons-div button {
-    cursor: pointer;
-}
-
 .add-todo-button-div .add-button {
-    cursor: pointer;
     border: none;
     outline: none;
     background: none;
@@ -86,17 +85,17 @@
 }
 
 #overlay {
+    display: none;
+}
+
+#overlay.active {
+    display: block;
     position: fixed;
-    opacity: 0;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, .2); 
-}
-
-#overlay.active {
-    opacity: 1;
 }
 
 .todo-form {
@@ -133,6 +132,30 @@
     background: blue;
     grid-row : 2 / 3;
     grid-column: 1 / 2;
+}
+
+#sidebar > div {
+    padding: 10px 15px;
+}
+
+#sidebar-home > div {
+    padding: 10px 15px;
+}
+
+#sidebar-projects > button {
+    margin: 10px 15px;
+}
+
+#sidebar-projects > form {
+    margin: 10px 15px;
+}
+
+.project-form {
+    display: none;
+}
+
+.project-form.active {
+    display: block;
 }
 
 #body {

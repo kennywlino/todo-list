@@ -1,6 +1,9 @@
 import ToDo from "./todo";
 import Project from "./project";
+import ProjectCollection from "./projectCollection";
 import './style.css';
+
+const projectCollection = new ProjectCollection();
 
 // defines header to display page title
 function createHeader() {
@@ -36,13 +39,10 @@ function createHeader() {
     
     header.appendChild(quickTodoDiv);
 
-    // new ToDo button
-    //header.appendChild(createAddTodoButton());
-
     return header;
 }
 
-// EL function used to open up the dropdown menu
+// EL function used to toggle (open/close) the dropdown menu
 function openDropDown() {
     const sidebarDiv = document.getElementById("sidebar");
     sidebarDiv.classList.toggle("active");
@@ -96,7 +96,7 @@ function createQuickTodoForm() {
 
     const detailsButton = document.createElement("button");
     detailsButton.setAttribute("type", "button");
-    detailsButton.classList.add("details-button");
+    detailsButton.setAttribute("id", "details-button");
     detailsButton.textContent = "Details";
     detailsButton.addEventListener("click", addDetailedTodo);
 
@@ -208,7 +208,110 @@ function createSidebar() {
     const sidebarDiv = document.createElement("div");
     sidebarDiv.setAttribute("id", "sidebar");
 
+    const [homeDiv, projectsDiv] = loadSidebarContent();
+
+    sidebarDiv.appendChild(homeDiv);
+    sidebarDiv.appendChild(projectsDiv);
+
     return sidebarDiv;
+}
+
+function loadSidebarContent() {
+    const homeDiv = document.createElement("div");
+    homeDiv.setAttribute("id", "sidebar-home");
+    const homeHeader = document.createElement("h2");
+    homeHeader.textContent = "Home";
+
+    // Home section of sidebar
+    const inboxDiv = document.createElement("div");
+    inboxDiv.setAttribute("id", "sidebar-inbox");
+    inboxDiv.textContent = "Inbox";
+
+    const todayTodosDiv = document.createElement("div");
+    todayTodosDiv.setAttribute("id", "sidebar-today");
+    todayTodosDiv.textContent = "Today";
+
+    const nextSevenDaysDiv = document.createElement("div");
+    nextSevenDaysDiv.setAttribute("id", "sidebar-next-seven");
+    nextSevenDaysDiv.textContent = "Next 7 Days";
+
+    homeDiv.appendChild(homeHeader);
+    homeDiv.appendChild(inboxDiv);
+    homeDiv.appendChild(todayTodosDiv);
+    homeDiv.appendChild(nextSevenDaysDiv);
+
+    // projects section of sidebar
+    const projectsDiv = document.createElement("div");
+    projectsDiv.setAttribute("id", "sidebar-projects");
+    const projectsHeader = document.createElement("h2");
+    projectsHeader.textContent = "Projects";
+
+    // new project button
+    const newProjectButton = document.createElement("button");
+    newProjectButton.setAttribute("type", "button");
+    newProjectButton.setAttribute("id", "new-project-button");
+    newProjectButton.textContent = "New Project";
+    newProjectButton.addEventListener("click", showNewProjectForm);
+
+    projectsDiv.append(projectsHeader);
+    projectsDiv.append(newProjectButton);
+    projectsDiv.append(createNewProjectForm());
+
+    return [homeDiv, projectsDiv];
+}
+
+// EL function to show the new project form when the "New Project" button
+// inside the sidebar is clicked
+function showNewProjectForm() {
+    const projectForm = document.querySelector(".project-form");
+    projectForm.classList.add("active");
+}
+
+// function used to hide new project form after new project has been added
+function hideNewProjectForm() {
+    const projectForm = document.querySelector(".project-form");
+    projectForm.classList.remove("active");
+}
+
+// defines form for adding new projects
+function createNewProjectForm() {
+    const projectForm = document.createElement("form");
+    projectForm.classList.add("project-form");
+
+    const inputAndButtonsDiv = document.createElement("div");
+    inputAndButtonsDiv.classList.add("input-and-buttons-div");
+    
+    const projectInput = document.createElement("input");
+    projectInput.classList.add("project-input");
+
+    projectInput.setAttribute("type", "text");
+    projectInput.setAttribute("name", "todo");
+    projectInput.setAttribute("placeholder", "Project Name");
+    
+    inputAndButtonsDiv.appendChild(projectInput);
+
+    const addButton = document.createElement("button");
+    addButton.setAttribute("type", "button");
+    addButton.classList.add("add-button");
+    addButton.textContent = "Add";
+    addButton.addEventListener("click", addNewProject);
+
+    inputAndButtonsDiv.appendChild(addButton);
+
+    projectForm.appendChild(inputAndButtonsDiv);
+
+    return projectForm;
+
+}
+
+// EL function for adding new project
+function addNewProject(name) {
+    const projectName = document.querySelector(".project-input").value;
+    const project = new Project(projectName);
+    projectCollection.addNewProject(project);
+    console.log(JSON.stringify(projectCollection.projects));
+    //console.log(projectName);
+    hideNewProjectForm();
 }
 
 // defines the body of the page that holds main ToDo items
@@ -240,10 +343,10 @@ function setUpPage() {
     const content = document.getElementById("content");
     content.appendChild(createHeader());
     content.appendChild(createDetailedTodoForm());
-    content.appendChild(createOverlay());
     content.appendChild(createSidebar());
     content.appendChild(createBody());
     content.appendChild(createFooter());
+    content.appendChild(createOverlay());
 }
 
 export default setUpPage;
