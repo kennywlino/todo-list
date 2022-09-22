@@ -12,9 +12,10 @@ function createHeader() {
     leftDiv.setAttribute("id", "left-div");
 
     const dropDownButton = document.createElement("button");
-    dropDownButton.classList.add("dropdown");
+    dropDownButton.setAttribute("id" , "dropdown");
     dropDownButton.setAttribute("type", "button");
     dropDownButton.textContent = "#";
+    dropDownButton.addEventListener("click", openDropDown);
 
     // title headline
     const pageName = document.createElement("h1");
@@ -39,6 +40,15 @@ function createHeader() {
     //header.appendChild(createAddTodoButton());
 
     return header;
+}
+
+// EL function used to open up the dropdown menu
+function openDropDown() {
+    const sidebarDiv = document.getElementById("sidebar");
+    sidebarDiv.classList.toggle("active");
+
+    const bodyDiv = document.getElementById("body");
+    bodyDiv.classList.toggle("smaller");
 }
 
 // creates the basic ToDo form to use both standalone in the header
@@ -106,7 +116,7 @@ function createQuickTodoForm() {
 // EL function used to open detailed ToDo menu 
 // and carry over input from quick ToDo if existing
 function addDetailedTodo() {
-    const todoPopUp = document.querySelector(".todo-popup");
+    const todoPopUp = document.getElementById("todo-popup");
     
     let quickTodoInput = document.getElementById("todo-quick");
     let detailedTodoInput = document.getElementById("todo-detailed");
@@ -178,7 +188,7 @@ function createDetailedTodoForm() {
 
 // EL function used to close the detailed ToDo menu
 function closeDetailedTodo() {
-    const todoPopUp = document.querySelector(".todo-popup");
+    const todoPopUp = document.getElementById("todo-popup");
 
     const detailedTodoForm = document.querySelector(".todo-form.detailed");
     let todoInput = detailedTodoForm.querySelector(".todo-input");
@@ -203,7 +213,10 @@ function createSidebar() {
 
 // defines the body of the page that holds main ToDo items
 function createBody() {
-
+    const bodyDiv = document.createElement("div");
+    bodyDiv.setAttribute("id", "body");
+    
+    return bodyDiv;
 }
 
 // defines the overlay used when opening up the detailed ToDo menu
@@ -229,7 +242,7 @@ function setUpPage() {
     content.appendChild(createDetailedTodoForm());
     content.appendChild(createOverlay());
     content.appendChild(createSidebar());
-    // content.appendChild(createBody());
+    content.appendChild(createBody());
     content.appendChild(createFooter());
 }
 
