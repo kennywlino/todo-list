@@ -11,10 +11,9 @@ export default class ProjectCollection {
     }   
 
     addNewProject(newProject) {
-        /* if (! this.projects.find((project) => project.title === newProject)) {
+        if (! this.projects.find((project) => project.title === newProject)) {
             this.projects.push(newProject);
-        } */
-        this.projects.push(newProject);
+        }
         this.saveProjectCollection();
     }
 

@@ -217,12 +217,12 @@ function createSidebar() {
 }
 
 function loadSidebarContent() {
+    // Home section of sidebar
     const homeDiv = document.createElement("div");
     homeDiv.setAttribute("id", "sidebar-home");
     const homeHeader = document.createElement("h2");
     homeHeader.textContent = "Home";
 
-    // Home section of sidebar
     const inboxDiv = document.createElement("div");
     inboxDiv.setAttribute("id", "sidebar-inbox");
     inboxDiv.textContent = "Inbox";
@@ -253,9 +253,15 @@ function loadSidebarContent() {
     newProjectButton.textContent = "New Project";
     newProjectButton.addEventListener("click", showNewProjectForm);
 
-    projectsDiv.append(projectsHeader);
-    projectsDiv.append(newProjectButton);
-    projectsDiv.append(createNewProjectForm());
+    // div to hold all projects inside ProjectCollection
+
+    const allProjectsDiv = document.createElement("div");
+    allProjectsDiv.setAttribute("id", "sidebar-all-projects");
+    
+    projectsDiv.appendChild(projectsHeader);
+    projectsDiv.appendChild(newProjectButton);
+    projectsDiv.appendChild(createNewProjectForm());
+    projectsDiv.appendChild(allProjectsDiv);
 
     return [homeDiv, projectsDiv];
 }
@@ -309,10 +315,53 @@ function addNewProject(name) {
     const projectName = document.querySelector(".project-input").value;
     const project = new Project(projectName);
     projectCollection.addNewProject(project);
-    console.log(JSON.stringify(projectCollection.projects));
-    //console.log(projectName);
+    displayProjects();
     hideNewProjectForm();
 }
+
+// displays and sets up the Projects inside ProjectCollection on the sidebar
+function displayProjects() {
+    const allProjects = projectCollection.projects;
+    // defined so we don't include them in the "Projects" section AND "Home" section
+    const specialHomeProjects = ["Inbox", "Today", "Next 7 Days"];
+    let alreadyDisplayedProjects = document.getElementById("sidebar-all-projects").childNodes;
+    alreadyDisplayedProjects = Array.from(alreadyDisplayedProjects);
+    alreadyDisplayedProjects = alreadyDisplayedProjects.map(element => {return element.id});
+    console.log(allProjects);
+    console.log(alreadyDisplayedProjects);
+    for (const project of allProjects) {
+        if (!alreadyDisplayedProjects.includes(project.title) 
+            && !specialHomeProjects.includes(project.title)) {
+            createProjectDiv(project)
+        }
+    }
+        // and call displayTodos() to display all of its ToDos on click
+}
+
+// creates a single div for a Project and adds it 
+// to the "Projects" section on the sidebar
+
+function createProjectDiv(project) {
+    // ADD: if project doesn't exist in body
+
+    const sidebarProjectsDiv = document.getElementById("sidebar-all-projects");
+
+    const projectDiv = document.createElement("div");
+    projectDiv.setAttribute("id", project.title);
+
+    const projectHeader = document.createElement("h3");
+    projectHeader.textContent = project.title;
+
+    projectDiv.appendChild(projectHeader);
+
+    sidebarProjectsDiv.appendChild(projectDiv);
+}
+
+/*
+displayTodos(project) {
+
+}
+*/
 
 // defines the body of the page that holds main ToDo items
 function createBody() {
