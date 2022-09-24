@@ -138,14 +138,12 @@ button:hover {
     padding: 20px 30px;
 }
 
-#sidebar-home > div {
+#sidebar-home > div, 
+#sidebar-all-projects > div {
     padding: 10px 15px;
 }
 
-#sidebar-projects > button {
-    margin: 10px 15px;
-}
-
+#sidebar-projects > button, 
 #sidebar-projects > form {
     margin: 10px 15px;
 }
@@ -158,11 +156,11 @@ button:hover {
     display: block;
 }
 
-#sidebar-all-projects > div {
+#sidebar-home > div, #sidebar-all-projects > div {
     cursor: pointer;
 }
 
-#sidebar-all-projects > div:hover {
+#sidebar-home > div:hover, #sidebar-all-projects > div:hover {
     color: red;
 }
 

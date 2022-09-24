@@ -7,7 +7,6 @@ export default class ProjectCollection {
     constructor() {
         this._projects = []
         this.addDefaultProjects();
-        this.loadFromLocalStorage();
     }
 
     get projects() {
@@ -18,27 +17,22 @@ export default class ProjectCollection {
         return this._projects = arr;
     }
     
-    // adds in Inbox, Today, and Next 7 Days if not in PC already
+    // adds in Inbox, Today, and Next 7 Days 
     addDefaultProjects() {
-        if (!localStorage.getItem('ProjectCollection')) {
-            this._projects.push(new Project('Inbox'));
-            this._projects.push(new Project('Today'));
-            this._projects.push(new Project('Next 7 Days'));
-            this.saveToLocalStorage();
-        }
+        this._projects.push(new Project('Inbox'));
+        this._projects.push(new Project('Today'));
+        this._projects.push(new Project('Next 7 Days'));
     }
     
     addNewProject(proj) {
         if (! this.getProject(proj.title)) {
             this.projects.push(proj);
         }
-        this.saveToLocalStorage();
     }
 
     deleteProject(projTitle) {
         const proj = this.getProject(projTitle);
         this.projects.splice(this.projects.indexOf(proj), 1)
-        this.saveToLocalStorage();
     }
 
     getProject(projTitle) {
@@ -48,14 +42,12 @@ export default class ProjectCollection {
     addTodo(projTitle, todo) {
         const project = this.getProject(projTitle);
         project.addTodo(todo);
-        this.saveToLocalStorage();
     }
 
     deleteTodo(projTitle, todoName) {
         const project = this.getProject(projTitle);
         const todo = this.getTodo(projTitle, todoName);
         project.deleteTodo(todo);
-        this.saveToLocalStorage();
     }
 
     getTodo(projTitle, todoName) {
@@ -82,5 +74,35 @@ export default class ProjectCollection {
                 this.projects = allProjects;
             }
         }
+    }
+
+    // loads a set of sample projects and ToDos to show functionality
+    loadSamples() {
+        this.projects = [];
+        this.addDefaultProjects();
+        let projectPersonal = new Project("Personal");
+        let todoPersonal1 = new ToDo("Do laundry", "Separate colors and whites!", "2022-03-27");
+        let todoPersonal2 = new ToDo("Go grocery shopping", "See shopping list", "2022-03-30");
+        let todoPersonal3 = new ToDo("Buy Jenny's b-day present", "Soap or candles?", "2022-04-12");
+        projectPersonal.addTodo(todoPersonal1);
+        projectPersonal.addTodo(todoPersonal2);
+        projectPersonal.addTodo(todoPersonal3);
+        let projectWork = new Project("Work");
+        let todoWork1 = new ToDo("Write weekly report", "Add links to all tickets", "2022-03-29");
+        let todoWork2 = new ToDo("Prepare presentation", "Keep under 10 minutes", "2022-04-16");
+        let todoWork3 = new ToDo("Meet with boss", "Talk about promotion?", "2022-05-02");
+        projectWork.addTodo(todoWork1);
+        projectWork.addTodo(todoWork2);
+        projectWork.addTodo(todoWork3);
+        let projectTrip = new Project("Trip");
+        let todoTrip1 = new ToDo("Buy airplane tickets", "Find non-stop flight if possible", "2022-04-04");
+        let todoTrip2 = new ToDo("Pack bags", "Bring sunscreen!", "2022-05-15")
+        let todoTrip3 = new ToDo("Buy souvenirs to bring", "Magnets or food?", "2022-05-01");
+        projectTrip.addTodo(todoTrip1);
+        projectTrip.addTodo(todoTrip2);
+        projectTrip.addTodo(todoTrip3);
+        this.addNewProject(projectPersonal);
+        this.addNewProject(projectWork);
+        this.addNewProject(projectTrip);
     }
 }

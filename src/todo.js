@@ -18,7 +18,7 @@ export default class ToDo {
         return this._details;
     }
 
-    set description(value) {
+    set details(value) {
         return this._details = value;
     }
 

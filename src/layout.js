@@ -4,17 +4,9 @@ import ProjectCollection from "./projectCollection";
 import './style.css';
 
 let projectCollection = new ProjectCollection();
+projectCollection.loadFromLocalStorage();
+projectCollection.loadSamples();
 let allProjects = projectCollection.projects;
-console.log(allProjects);
-// console.log(localStorage);
-projectCollection.addNewProject(new Project("test"));
-let testTodo = new ToDo("gym");
-projectCollection.addTodo("test", testTodo);
-projectCollection.addNewProject(new Project("league"));
-console.log(allProjects);
-//projectCollection.deleteProject("test");
-console.log(allProjects);
-
 
 // defined so we don't include them in the "Projects" section AND "Home" section
 const specialHomeProjects = ["Inbox", "Today", "Next 7 Days"];
@@ -222,38 +214,21 @@ function createSidebar() {
     const sidebarDiv = document.createElement("div");
     sidebarDiv.setAttribute("id", "sidebar");
 
-    const [homeDiv, projectsDiv] = loadSidebarDivs();
-
-    sidebarDiv.appendChild(homeDiv);
-    sidebarDiv.appendChild(projectsDiv);
-
-    return sidebarDiv;
-}
-
-function loadSidebarDivs() {
     // Home section of sidebar
     const homeDiv = document.createElement("div");
     homeDiv.setAttribute("id", "sidebar-home");
     const homeHeader = document.createElement("h2");
     homeHeader.textContent = "Home";
 
-    const inboxDiv = document.createElement("div");
-    inboxDiv.setAttribute("id", "sidebar-inbox");
-    inboxDiv.textContent = "Inbox";
-
-    const todayTodosDiv = document.createElement("div");
-    todayTodosDiv.setAttribute("id", "sidebar-today");
-    todayTodosDiv.textContent = "Today";
-
-    const nextSevenDaysDiv = document.createElement("div");
-    nextSevenDaysDiv.setAttribute("id", "sidebar-next-seven");
-    nextSevenDaysDiv.textContent = "Next 7 Days";
-
     homeDiv.appendChild(homeHeader);
-    homeDiv.appendChild(inboxDiv);
-    homeDiv.appendChild(todayTodosDiv);
-    homeDiv.appendChild(nextSevenDaysDiv);
 
+    // Inbox, Today, Next 7 Days
+    const homeProjectDivs = loadHomeProjectDivs();
+    console.log(homeProjectDivs);
+    for (const projectDiv of homeProjectDivs) {
+        homeDiv.appendChild(projectDiv);
+    }
+   
     // projects section of sidebar
     const projectsDiv = document.createElement("div");
     projectsDiv.setAttribute("id", "sidebar-projects");
@@ -277,11 +252,27 @@ function loadSidebarDivs() {
     projectsDiv.appendChild(createNewProjectForm());
     projectsDiv.appendChild(allProjectsDiv);
 
-    return [homeDiv, projectsDiv];
+    const allProjectDivs = loadProjectsDivs();
+    console.log(allProjectDivs);
+
+    for (const projectDiv of allProjectDivs) {
+        allProjectsDiv.appendChild(projectDiv);
+    }
+
+    sidebarDiv.appendChild(homeDiv);
+    sidebarDiv.appendChild(projectsDiv);
+
+    return sidebarDiv;
 }
 
 // loads the divs containing "Inbox", "Today", "Next 7 Days"
-function loadHomeDivs() {
+function loadHomeProjectDivs() {
+    let homeProjectDivs = [];
+    for (const projName of specialHomeProjects) {
+        const homeProject = projectCollection.getProject(projName);
+        homeProjectDivs.push(createProjectDiv(homeProject));
+    }
+    return homeProjectDivs;
 
 }
 
@@ -334,28 +325,32 @@ function addNewProject(name) {
     const projectName = document.querySelector(".project-input").value;
     const project = new Project(projectName);
     projectCollection.addNewProject(project);
-    displayProjects();
+    projectCollection.saveToLocalStorage();
+    loadProjectsDivs();
     hideNewProjectForm();
 }
 
 // displays and sets up the Projects inside ProjectCollection on the sidebar
-function displayProjects() {
-    let alreadyDisplayedProjects = document.getElementById("sidebar-all-projects").childNodes;
-    alreadyDisplayedProjects = Array.from(alreadyDisplayedProjects);
-    alreadyDisplayedProjects = alreadyDisplayedProjects.map(element => {return element.id}); 
+function loadProjectsDivs() {
+    let alreadyDisplayedProjects = [];
+    if (document.getElementById("sidebar-all-projects")) {
+        alreadyDisplayedProjects = document.getElementById("sidebar-all-projects").childNodes;
+        alreadyDisplayedProjects = Array.from(alreadyDisplayedProjects);
+        alreadyDisplayedProjects = alreadyDisplayedProjects.map(element => {return element.id});  
+    }
+    let projectsToLoad = [];
     for (const project of allProjects) {
         if (!alreadyDisplayedProjects.includes(project.title) 
             && !specialHomeProjects.includes(project.title)) {
-            createProjectDiv(project);
+            projectsToLoad.push(createProjectDiv(project));
         }
     }
+    return projectsToLoad;
 }
 
 // creates a single div for a Project and adds it 
 // to the "Projects" section on the sidebar
 function createProjectDiv(project) {
-    const sidebarProjectsDiv = document.getElementById("sidebar-all-projects");
-
     const projectDiv = document.createElement("div");
     projectDiv.setAttribute("id", project.title);
 
@@ -367,8 +362,8 @@ function createProjectDiv(project) {
     });
 
     projectDiv.appendChild(projectHeader);
-
-    sidebarProjectsDiv.appendChild(projectDiv);
+    
+    return projectDiv;
 }
 
 // EL function used to show all ToDos inside a project on-click
@@ -378,7 +373,6 @@ function displayTodos(event, project) {
     bodyDiv.replaceChildren(); // clears all existing ToDos
 
     const allProjectTodos = project.todos;
-    console.log(allProjectTodos);
 
     for (const todo of allProjectTodos) {
         const todoDiv = document.createElement("div");
@@ -418,7 +412,6 @@ function setUpPage() {
     content.appendChild(createHeader());
     content.appendChild(createDetailedTodoForm());
     content.appendChild(createSidebar());
-    displayProjects();
     content.appendChild(createBody());
     content.appendChild(createFooter());
     content.appendChild(createOverlay());
