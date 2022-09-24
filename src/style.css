@@ -135,7 +135,7 @@ button:hover {
 }
 
 #sidebar > div {
-    padding: 10px 15px;
+    padding: 20px 30px;
 }
 
 #sidebar-home > div {
@@ -156,6 +156,14 @@ button:hover {
 
 .project-form.active {
     display: block;
+}
+
+#sidebar-all-projects > div {
+    cursor: pointer;
+}
+
+#sidebar-all-projects > div:hover {
+    color: red;
 }
 
 #body {

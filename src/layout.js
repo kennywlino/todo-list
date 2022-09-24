@@ -3,12 +3,18 @@ import Project from "./project";
 import ProjectCollection from "./projectCollection";
 import './style.css';
 
-const projectCollection = new ProjectCollection();
-let allProjects = projectCollection.loadFromLocalStorage();
+let projectCollection = new ProjectCollection();
+let allProjects = projectCollection.projects;
 console.log(allProjects);
-allProjects[0].addTodo("wash");
-allProjects[0].addTodo("gym");
-console.log(allProjects[0]);
+// console.log(localStorage);
+projectCollection.addNewProject(new Project("test"));
+let testTodo = new ToDo("gym");
+projectCollection.addTodo("test", testTodo);
+projectCollection.addNewProject(new Project("league"));
+console.log(allProjects);
+//projectCollection.deleteProject("test");
+console.log(allProjects);
+
 
 // defined so we don't include them in the "Projects" section AND "Home" section
 const specialHomeProjects = ["Inbox", "Today", "Next 7 Days"];
@@ -216,7 +222,7 @@ function createSidebar() {
     const sidebarDiv = document.createElement("div");
     sidebarDiv.setAttribute("id", "sidebar");
 
-    const [homeDiv, projectsDiv] = loadSidebarContent();
+    const [homeDiv, projectsDiv] = loadSidebarDivs();
 
     sidebarDiv.appendChild(homeDiv);
     sidebarDiv.appendChild(projectsDiv);
@@ -224,7 +230,7 @@ function createSidebar() {
     return sidebarDiv;
 }
 
-function loadSidebarContent() {
+function loadSidebarDivs() {
     // Home section of sidebar
     const homeDiv = document.createElement("div");
     homeDiv.setAttribute("id", "sidebar-home");
@@ -272,6 +278,11 @@ function loadSidebarContent() {
     projectsDiv.appendChild(allProjectsDiv);
 
     return [homeDiv, projectsDiv];
+}
+
+// loads the divs containing "Inbox", "Today", "Next 7 Days"
+function loadHomeDivs() {
+
 }
 
 // EL function to show the new project form when the "New Project" button
@@ -331,7 +342,7 @@ function addNewProject(name) {
 function displayProjects() {
     let alreadyDisplayedProjects = document.getElementById("sidebar-all-projects").childNodes;
     alreadyDisplayedProjects = Array.from(alreadyDisplayedProjects);
-    alreadyDisplayedProjects = alreadyDisplayedProjects.map(element => {return element.id});
+    alreadyDisplayedProjects = alreadyDisplayedProjects.map(element => {return element.id}); 
     for (const project of allProjects) {
         if (!alreadyDisplayedProjects.includes(project.title) 
             && !specialHomeProjects.includes(project.title)) {
@@ -367,6 +378,7 @@ function displayTodos(event, project) {
     bodyDiv.replaceChildren(); // clears all existing ToDos
 
     const allProjectTodos = project.todos;
+    console.log(allProjectTodos);
 
     for (const todo of allProjectTodos) {
         const todoDiv = document.createElement("div");
@@ -406,10 +418,10 @@ function setUpPage() {
     content.appendChild(createHeader());
     content.appendChild(createDetailedTodoForm());
     content.appendChild(createSidebar());
+    displayProjects();
     content.appendChild(createBody());
     content.appendChild(createFooter());
     content.appendChild(createOverlay());
-    displayProjects();
 }
 
 export default setUpPage;

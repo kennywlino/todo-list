@@ -21,6 +21,16 @@ export default class Project {
     }
 
     addTodo(todo) {
-        this._todos.push(todo);
+        if(! this.getTodo(todo.title)) {
+            this._todos.push(todo);
+        }
+    }
+
+    deleteTodo(todo) {
+        this._todos.splice(this._todos.indexOf(todo), 1);
+    }
+
+    getTodo(todoTitle) {
+        return this.todos.find((todo) => todo.title === todoTitle);
     }
 }
