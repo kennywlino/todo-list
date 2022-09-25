@@ -26,7 +26,6 @@
     grid-column: 1 / -1;
     grid-row: 1 / 2;
     padding: 10px 15px;
-    /* height: 75px; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,6 +35,13 @@
 #left-div {
     display: flex;
     gap: 10px;
+}
+
+#left-div button {
+    background-image: url("./assets/bars-3.svg");
+    background-size: cover;
+    width: 35px;
+    height: 35px;
 }
 
 #left-div h1 {
@@ -51,15 +57,15 @@ button:hover {
     background: var(--light-blue);
 }
 
-.input-and-buttons-div {
+#header .input-and-buttons-div {
     position: relative;
 }
 
-.input-and-buttons-div input{
+#header .input-and-buttons-div input{
     height: 40px;
 }
 
-.input-and-buttons-div .buttons-div {
+#header .input-and-buttons-div .buttons-div {
     position: absolute;
     right: 10px;
     top: 10px;
@@ -69,13 +75,24 @@ button:hover {
 
 }
 
-.add-todo-button-div .add-button {
+.todo-form.quick .buttons-div #details-button {
     border: none;
-    outline: none;
-    background: none;
-    font-size: 1.25rem;
-    font-weight: bold;
+    background-color: transparent;
+    background-image: url("./assets/bars-3.svg");
+    background-size: cover;
+    width: 25px;
+    height: 25px; 
 }
+
+.todo-form.quick .buttons-div #add-button {
+    border: none;
+    background-color: transparent;
+    background-image: url("./assets/plus.svg");
+    background-size: cover;
+    width: 25px;
+    height: 25px; 
+}
+
 
 #todo-popup {
     position: fixed;
@@ -157,13 +174,34 @@ button:hover {
 }
 
 #sidebar-home > div, 
-#sidebar-all-projects > div {
+#sidebar-projects > div {
     padding: 10px 15px;
 }
 
 #sidebar-projects > button, 
 #sidebar-projects > form {
     margin: 10px 15px;
+}
+
+#sidebar-home-projects > div {
+    margin: 15px 20px;
+}
+
+#sidebar-all-projects > div {
+    margin: 10px 20px;
+}
+
+#home-icon-and-header, 
+#projects-icon-and-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+#home-icon-and-header img,
+#projects-icon-and-header img {
+    width: 30px;
+    height: 30px;
 }
 
 .project-form {
@@ -174,12 +212,27 @@ button:hover {
     display: block;
 }
 
-#sidebar-home > div, 
+.project-form .input-and-buttons-div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.project-form .input-and-buttons-div button {
+    border: none;
+    background-color: transparent;
+    background-image: url("./assets/plus-circle.svg");
+    background-size: cover;
+    width: 25px;
+    height: 25px; 
+}
+
+#sidebar-home-projects > div, 
 #sidebar-all-projects > div {
     cursor: pointer;
 }
 
-#sidebar-home > div:hover, 
+#sidebar-home-projects > div:hover, 
 #sidebar-all-projects > div:hover {
     color: var(--blue);
 }

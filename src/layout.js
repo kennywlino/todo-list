@@ -3,9 +3,12 @@ import Project from "./project";
 import ProjectCollection from "./projectCollection";
 import './style.css';
 
+import HomeIcon from './assets/home.svg';
+import ProjectIcon from './assets/rectangle-stack.svg';
+
 let projectCollection = new ProjectCollection();
 projectCollection.loadFromLocalStorage();
-projectCollection.loadSamples();
+// projectCollection.loadSamples();
 let allProjects = projectCollection.projects;
 
 // defined so we don't include them in the "Projects" section AND "Home" section
@@ -23,7 +26,6 @@ function createHeader() {
     const dropDownButton = document.createElement("button");
     dropDownButton.setAttribute("id" , "dropdown");
     dropDownButton.setAttribute("type", "button");
-    dropDownButton.textContent = "#";
     dropDownButton.addEventListener("click", openDropDown);
 
     // title headline
@@ -82,7 +84,7 @@ function createQuickTodoForm() {
     todoForm.classList.add("quick");
     
     const todoFormInput = todoForm.querySelector(".todo-input");
-    todoFormInput.setAttribute("id", 'todo-quick');
+    todoFormInput.setAttribute("id", 'todo-quick-input');
 
     // create a new div to wrap around the ToDo Form and buttons within the form
     // and moves the input into this div; 
@@ -103,13 +105,12 @@ function createQuickTodoForm() {
     const detailsButton = document.createElement("button");
     detailsButton.setAttribute("type", "button");
     detailsButton.setAttribute("id", "details-button");
-    detailsButton.textContent = "Details";
     detailsButton.addEventListener("click", addDetailedTodo);
 
     const addButton = document.createElement("button");
     addButton.setAttribute("type", "button");
-    addButton.classList.add("add-button");
-    addButton.textContent = "Add";
+    addButton.setAttribute("id", "add-button");
+    addButton.addEventListener("click", addQuickTodo);
 
     buttonsDiv.append(detailsButton);
     buttonsDiv.append(addButton);
@@ -117,24 +118,6 @@ function createQuickTodoForm() {
     inputAndButtonsDiv.appendChild(buttonsDiv);
 
     return todoForm;
-}
-
-// EL function used to open detailed ToDo menu 
-// and carry over input from quick ToDo if existing
-function addDetailedTodo() {
-    const todoPopUp = document.getElementById("todo-popup");
-    
-    let quickTodoInput = document.getElementById("todo-quick");
-    let detailedTodoInput = document.getElementById("todo-detailed");
-    if (quickTodoInput.value != '') {
-        detailedTodoInput.value = quickTodoInput.value;
-        quickTodoInput.value = '';
-    }
-
-    const overlay = document.getElementById("overlay");
-    overlay.classList.add("active");
-
-    todoPopUp.classList.add("active");
 }
 
 // defines extended form to take in user input for ToDo items
@@ -149,7 +132,7 @@ function createDetailedTodoForm() {
     todoForm.classList.add("detailed");
 
     const todoFormInput = todoForm.querySelector(".todo-input");
-    todoFormInput.setAttribute("id", 'todo-detailed');
+    todoFormInput.setAttribute("id", 'todo-detailed-input');
 
     // extended ToDo form details
     const detailsInput = document.createElement("input");
@@ -192,6 +175,44 @@ function createDetailedTodoForm() {
     return div;
 }
 
+// EL function used to add a basic ToDo to Inbox from the quick ToDo bar
+// located in the header
+function addQuickTodo() {
+    let quickTodoInput = document.getElementById("todo-quick-input");
+    const todo = new ToDo(quickTodoInput.value);
+    projectCollection.addTodo("Inbox", todo);
+    projectCollection.saveToLocalStorage();
+}
+
+// EL function used to open detailed ToDo menu 
+// and carry over input from quick ToDo if existing
+function addDetailedTodo() {
+    const todoPopUp = document.getElementById("todo-popup");
+    
+    const overlay = document.getElementById("overlay");
+    overlay.classList.add("active");
+
+    todoPopUp.classList.add("active");
+    
+    // sets detailed ToDo input to contents of quick Todo
+    let quickTodoInput = document.getElementById("todo-quick-input");
+    let detailedTodoInput = document.getElementById("todo-detailed-input");
+    if (quickTodoInput.value != '') {
+        detailedTodoInput.value = quickTodoInput.value;
+        quickTodoInput.value = '';
+    }
+
+    let detailsInput = document.querySelector(".details-input");
+    let dueDateInput = document.querySelector(".due-date-input");
+
+    console.log(dueDateInput);
+
+    const todo = new ToDo(detailedTodoInput.value, detailsInput.value, dueDateInput.value);
+
+    projectCollection.addTodo("Inbox", todo);
+    ProjectCollection.saveToLocalStorage();
+}
+
 // EL function used to close the detailed ToDo menu
 function closeDetailedTodo() {
     const todoPopUp = document.getElementById("todo-popup");
@@ -217,23 +238,47 @@ function createSidebar() {
     // Home section of sidebar
     const homeDiv = document.createElement("div");
     homeDiv.setAttribute("id", "sidebar-home");
+
+    const homeIconAndHeaderDiv = document.createElement("div");
+    homeIconAndHeaderDiv.setAttribute("id", "home-icon-and-header");
+
+    const homeIcon = new Image();
+    homeIcon.src = HomeIcon;
+    homeIconAndHeaderDiv.appendChild(homeIcon);
+
     const homeHeader = document.createElement("h2");
     homeHeader.textContent = "Home";
 
-    homeDiv.appendChild(homeHeader);
+    homeIconAndHeaderDiv.appendChild(homeHeader);
+    homeDiv.appendChild(homeIconAndHeaderDiv);
+
+    const sidebarHomeProjectsDiv = document.createElement("div");
+    sidebarHomeProjectsDiv.setAttribute("id", "sidebar-home-projects");
 
     // Inbox, Today, Next 7 Days
     const homeProjectDivs = loadHomeProjectDivs();
-    console.log(homeProjectDivs);
     for (const projectDiv of homeProjectDivs) {
-        homeDiv.appendChild(projectDiv);
+        sidebarHomeProjectsDiv.appendChild(projectDiv);
     }
-   
+    
+    homeDiv.appendChild(sidebarHomeProjectsDiv);
+
     // projects section of sidebar
     const projectsDiv = document.createElement("div");
     projectsDiv.setAttribute("id", "sidebar-projects");
+
+    const projectsIconAndHeaderDiv = document.createElement("div");
+    projectsIconAndHeaderDiv.setAttribute("id", "projects-icon-and-header");
+
+    const projectsIcon = new Image();
+    projectsIcon.src = ProjectIcon;
+    projectsIconAndHeaderDiv.appendChild(projectsIcon);
+
     const projectsHeader = document.createElement("h2");
     projectsHeader.textContent = "Projects";
+
+    projectsIconAndHeaderDiv.appendChild(projectsHeader);
+    projectsDiv.appendChild(projectsIconAndHeaderDiv);
 
     // new project button
     const newProjectButton = document.createElement("button");
@@ -247,13 +292,11 @@ function createSidebar() {
     const allProjectsDiv = document.createElement("div");
     allProjectsDiv.setAttribute("id", "sidebar-all-projects");
     
-    projectsDiv.appendChild(projectsHeader);
     projectsDiv.appendChild(newProjectButton);
     projectsDiv.appendChild(createNewProjectForm());
     projectsDiv.appendChild(allProjectsDiv);
 
     const allProjectDivs = loadProjectsDivs();
-    console.log(allProjectDivs);
 
     for (const projectDiv of allProjectDivs) {
         allProjectsDiv.appendChild(projectDiv);
@@ -309,7 +352,6 @@ function createNewProjectForm() {
     const addButton = document.createElement("button");
     addButton.setAttribute("type", "button");
     addButton.classList.add("add-button");
-    addButton.textContent = "Add";
     addButton.addEventListener("click", addNewProject);
 
     inputAndButtonsDiv.appendChild(addButton);
@@ -321,12 +363,15 @@ function createNewProjectForm() {
 }
 
 // EL function for adding new project
-function addNewProject(name) {
+function addNewProject() {
     const projectName = document.querySelector(".project-input").value;
     const project = new Project(projectName);
     projectCollection.addNewProject(project);
     projectCollection.saveToLocalStorage();
-    loadProjectsDivs();
+
+    const allProjectDivs = document.getElementById("sidebar-all-projects");
+    allProjectDivs.appendChild(loadProjectsDivs()[0]);
+
     hideNewProjectForm();
 }
 
