@@ -191,16 +191,26 @@ button:hover {
 }
 
 #home-icon-and-header, 
-#projects-icon-and-header {
+#projects-icons-and-header {
     display: flex;
     align-items: center;
     gap: 0.5em;
 }
 
 #home-icon-and-header img,
-#projects-icon-and-header img {
+#projects-icons-and-header img {
     width: 30px;
     height: 30px;
+}
+
+#projects-icons-and-header button,
+.project-form .input-and-buttons-div button {
+    border: none;
+    background-color: transparent;
+    background-image: url("./assets/plus-circle.svg");
+    background-size: cover;
+    width: 25px;
+    height: 25px; 
 }
 
 .project-form {
@@ -215,15 +225,6 @@ button:hover {
     display: flex;
     align-items: center;
     gap: 5px;
-}
-
-.project-form .input-and-buttons-div button {
-    border: none;
-    background-color: transparent;
-    background-image: url("./assets/plus-circle.svg");
-    background-size: cover;
-    width: 25px;
-    height: 25px; 
 }
 
 #sidebar-home-projects > div, 
