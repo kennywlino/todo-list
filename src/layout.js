@@ -148,8 +148,34 @@ function createDetailedTodoForm() {
     dueDateInput.setAttribute("type", "date");
     dueDateInput.setAttribute("value", "2022-09-20");
 
+    // dropdown menu for project options
+
+    const dropdown = document.createElement("select");
+    dropdown.setAttribute("id", "project-dropdown");
+    dropdown.setAttribute("name", "project-dropdown");
+
+    const inboxOption = document.createElement("option");
+    inboxOption.setAttribute("value", "Inbox");
+    inboxOption.textContent = "Inbox";
+    inboxOption.setAttribute("selected", true);
+    dropdown.appendChild(inboxOption);
+    
+    // rest of projects that are not "Inbox", "Today" or "Next 7 Days"
+    let projectOptions = allProjects.slice(3);
+
+    if (projectOptions.length > 0) {
+        for (const project of projectOptions) {
+            const option = document.createElement("option");
+            option.setAttribute("value", project.title);
+            option.textContent = project.title;
+            dropdown.appendChild(option);
+        }
+    }
+
     todoForm.appendChild(detailsInput);
     todoForm.appendChild(dueDateInput);
+    todoForm.appendChild(dropdown);
+    // todoForm.appendChild(datalist);
 
     div.appendChild(todoForm);
 
@@ -174,6 +200,7 @@ function createDetailedTodoForm() {
     
     return div;
 }
+
 
 // EL function used to add a basic ToDo to Inbox from the quick ToDo bar
 // located in the header
@@ -205,12 +232,11 @@ function addDetailedTodo() {
     let detailsInput = document.querySelector(".details-input");
     let dueDateInput = document.querySelector(".due-date-input");
 
-    console.log(dueDateInput);
 
     const todo = new ToDo(detailedTodoInput.value, detailsInput.value, dueDateInput.value);
 
     projectCollection.addTodo("Inbox", todo);
-    ProjectCollection.saveToLocalStorage();
+    projectCollection.saveToLocalStorage();
 }
 
 // EL function used to close the detailed ToDo menu
@@ -364,10 +390,11 @@ function createNewProjectForm() {
 
 // EL function for adding new project
 function addNewProject() {
-    const projectName = document.querySelector(".project-input").value;
-    const project = new Project(projectName);
+    let projectName = document.querySelector(".project-input");
+    const project = new Project(projectName.value);
     projectCollection.addNewProject(project);
     projectCollection.saveToLocalStorage();
+    projectName.value = '';
 
     const allProjectDivs = document.getElementById("sidebar-all-projects");
     allProjectDivs.appendChild(loadProjectsDivs()[0]);

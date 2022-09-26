@@ -72,7 +72,6 @@ button:hover {
     z-index: 2;
     display: flex;
     gap: 5px;
-
 }
 
 .todo-form.quick .buttons-div #details-button {
@@ -104,7 +103,7 @@ button:hover {
     border-radius: 10px;
     z-index: 3;
     width: 750px;
-    height: 175px;
+    height: 200px;
     max-width: 60%;
     display: none;
 }
