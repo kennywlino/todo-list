@@ -8,7 +8,6 @@ import ProjectIcon from './assets/rectangle-stack.svg';
 
 let projectCollection = new ProjectCollection();
 projectCollection.loadFromLocalStorage();
-// projectCollection.loadSamples();
 let allProjects = projectCollection.projects;
 
 // defined so we don't include them in the "Projects" section AND "Home" section
@@ -112,6 +111,12 @@ function createQuickTodoForm() {
     addButton.setAttribute("id", "add-button");
     addButton.addEventListener("click", addQuickTodo);
 
+    // loads Inbox ToDos
+    const inboxProject = allProjects[0];
+    addButton.addEventListener("click", (event) => {
+        displayTodos(event, inboxProject);
+    });
+
     buttonsDiv.append(detailsButton);
     buttonsDiv.append(addButton);
 
@@ -183,9 +188,12 @@ function createDetailedTodoForm() {
     cancelButton.addEventListener("click", closeDetailedTodo);
 
     const addButton = document.createElement("button");
+    addButton.setAttribute("id", "detailed-add-button");
     addButton.classList.add("add-button");
     addButton.textContent = "Add ToDo";
-    addButton.addEventListener("click", addDetailedTodo);
+    addButton.addEventListener("click", (event) => {
+        addDetailedTodo(event);
+    });
 
     actionButtons.appendChild(cancelButton);
     actionButtons.appendChild(addButton);
@@ -235,18 +243,21 @@ function addQuickTodo() {
 
 // EL function used to add a detailed ToDo to any project of choice
 // using the ToDo pop-up menu
-
-function addDetailedTodo() {
+function addDetailedTodo(event) {
     let detailedTodoInput = document.getElementById("todo-detailed-input");
     let detailsInput = document.querySelector(".details-input");
     let dueDateInput = document.querySelector(".due-date-input");
     let projectDropdown = document.getElementById("project-dropdown");
-    const selectedProject = projectDropdown.options[projectDropdown.selectedIndex].value;
-
+    const selectedProjectName = projectDropdown.options[projectDropdown.selectedIndex].value;
     const todo = new ToDo(detailedTodoInput.value, detailsInput.value, dueDateInput.value);
 
-    projectCollection.addTodo(selectedProject, todo);
+    projectCollection.addTodo(selectedProjectName, todo);
     projectCollection.saveToLocalStorage();
+
+    // loads the selected project after adding detailed ToDo
+    const selectedProject = projectCollection.getProject(selectedProjectName);
+    displayTodos(event, selectedProject);
+
     closeDetailedTodo(); 
 }
 
@@ -367,7 +378,7 @@ function loadHomeProjectDivs() {
     let homeProjectDivs = [];
     for (const projName of specialHomeProjects) {
         const homeProject = projectCollection.getProject(projName);
-        homeProjectDivs.push(createProjectDiv(homeProject));
+        homeProjectDivs.push(createProjectDiv(homeProject, "home"));
     }
     return homeProjectDivs;
 
@@ -390,6 +401,9 @@ function hideNewProjectForm() {
 function createNewProjectForm() {
     const projectForm = document.createElement("form");
     projectForm.classList.add("project-form");
+    projectForm.addEventListener('submit', function (e){
+        e.preventDefault();
+    });
 
     const inputAndButtonsDiv = document.createElement("div");
     inputAndButtonsDiv.classList.add("input-and-buttons-div");
@@ -400,7 +414,7 @@ function createNewProjectForm() {
     projectInput.setAttribute("type", "text");
     projectInput.setAttribute("name", "todo");
     projectInput.setAttribute("placeholder", "Project Name");
-    
+
     inputAndButtonsDiv.appendChild(projectInput);
 
     const addButton = document.createElement("button");
@@ -445,7 +459,7 @@ function loadProjectsDivs() {
     for (const project of allProjects) {
         if (!alreadyDisplayedProjects.includes(project.title) 
             && !specialHomeProjects.includes(project.title)) {
-            projectsToLoad.push(createProjectDiv(project));
+            projectsToLoad.push(createProjectDiv(project, "projects"));
         }
     }
     return projectsToLoad;
@@ -453,20 +467,79 @@ function loadProjectsDivs() {
 
 // creates a single div for a Project and adds it 
 // to the "Projects" section on the sidebar
-function createProjectDiv(project) {
+function createProjectDiv(project, section) {
     const projectDiv = document.createElement("div");
     projectDiv.setAttribute("id", project.title);
 
     const projectHeader = document.createElement("h3");
     projectHeader.textContent = project.title;
 
-    projectDiv.addEventListener("click", (event) => {
+    projectHeader.addEventListener("click", (event) => {
         displayTodos(event, project);
     });
 
-    projectDiv.appendChild(projectHeader);
+    if (section == "projects") {
+        const modifyForm = document.createElement("input");
+        modifyForm.classList.add("modify-project-input");
+        modifyForm.setAttribute("type", "text");
+        modifyForm.setAttribute("name", "title");
+
+        const modifyButton = document.createElement("button");
+        modifyButton.setAttribute("type", "button");
+        modifyButton.classList.add("modify-button");
+        modifyButton.addEventListener("click", (event) => {
+            modifyProjectName(event, project.title);
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.setAttribute("type", "button");
+        deleteButton.classList.add("delete-button");
+        deleteButton.addEventListener("click", (event) => {
+            deleteProject(event, project.title);
+        });
     
+        projectDiv.appendChild(projectHeader);
+        projectDiv.appendChild(modifyForm);
+        projectDiv.appendChild(modifyButton);
+        projectDiv.appendChild(deleteButton);
+    } else {
+        projectDiv.appendChild(projectHeader);
+    }
+
     return projectDiv;
+}
+
+// EL function used to change project name for projects in the sidebar
+function modifyProjectName(event, projTitle) {
+    let projectDiv = document.getElementById(projTitle);
+    let projectHeader = projectDiv.firstChild;
+    const modifyInput = projectDiv.children[1];
+    modifyInput.classList.add("active");
+    projectHeader.classList.add("hidden");
+    modifyInput.value = projectHeader.textContent;
+    modifyInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const newProjectTitle = modifyInput.value;
+            projectDiv.setAttribute('id', newProjectTitle);
+            projectHeader.textContent = newProjectTitle;
+            const project = projectCollection.getProject(projTitle);
+
+            modifyInput.classList.remove("active");
+            projectHeader.classList.remove("hidden");
+            project.title = newProjectTitle;
+            projectCollection.saveToLocalStorage();
+        }
+    });
+}
+
+// EL function used to delete a project from the sidebar
+function deleteProject(event, projTitle) {
+    const projectDiv = document.getElementById(projTitle);
+    if (projectDiv.parentNode) {
+        projectDiv.parentNode.removeChild(projectDiv);
+    }
+    projectCollection.deleteProject(projTitle);
+    projectCollection.saveToLocalStorage();
 }
 
 // EL function used to show all ToDos inside a project on-click
@@ -477,10 +550,30 @@ function displayTodos(event, project) {
 
     const allProjectTodos = project.todos;
 
+    // empty div to line up ToDos in body
+    const emptyDiv = document.createElement("div");
+    bodyDiv.appendChild(emptyDiv);
+
+    const bodyHeader = document.createElement("h2");
+    bodyHeader.textContent = project.title;
+
+    bodyDiv.appendChild(bodyHeader);
+
     for (const todo of allProjectTodos) {
         const todoDiv = document.createElement("div");
         todoDiv.setAttribute("id", todo.title);
-        todoDiv.textContent = todo.title;
+
+        const titleDiv = document.createElement("div");
+        titleDiv.classList.add("project-title-div");
+        titleDiv.textContent = todo.title;
+
+        const dueDateDiv = document.createElement("div");
+        dueDateDiv.classList.add("due-date-div");
+        dueDateDiv.textContent = todo.dueDate;
+
+        todoDiv.appendChild(titleDiv);
+        todoDiv.appendChild(dueDateDiv);
+
         bodyDiv.appendChild(todoDiv);
     }
 }
@@ -489,7 +582,7 @@ function displayTodos(event, project) {
 function createBody() {
     const bodyDiv = document.createElement("div");
     bodyDiv.setAttribute("id", "body");
-    
+
     return bodyDiv;
 }
 
