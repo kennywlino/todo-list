@@ -1,0 +1,382 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;700&family=Lexend:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lexend', sans-serif;
+}
+
+:root {
+    --gray: #D9D9D9;
+    --green: #008435;
+    --blue: #002584;
+    --light-blue: #CCDAFF;
+}
+
+#content {
+    display: grid;
+    grid-template-rows: 1fr 9fr 0.5fr;
+    grid-template-columns: 1fr 4fr;
+    width: 100vw;
+    height: 100vh;
+}
+
+#header {
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--green);
+}
+
+#left-div {
+    display: flex;
+    gap: 10px;
+}
+
+#left-div button {
+    background-image: url("./assets/bars-3.svg");
+    background-size: cover;
+    width: 35px;
+    height: 35px;
+}
+
+#left-div h1 {
+    color: white;
+}
+
+button {
+    cursor: pointer;
+    z-index: 2;
+}
+
+#header .input-and-buttons-div {
+    position: relative;
+}
+
+#header .input-and-buttons-div input{
+    height: 40px;
+}
+
+#header .input-and-buttons-div .buttons-div {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+    display: flex;
+    gap: 5px;
+}
+
+.todo-form.quick .buttons-div #details-button,
+.todo-form.quick .buttons-div #add-button,
+#sidebar-all-projects button{
+    border: none;
+    background-color: transparent;
+    background-size: cover;
+    width: 25px;
+    height: 25px; 
+}
+
+.todo-form.quick .buttons-div #details-button {
+    background-image: url("./assets/bars-3.svg");
+}
+
+.todo-form.quick .buttons-div #add-button {
+    background-image: url("./assets/plus.svg");
+}
+
+.modify-button {
+    background-image: url("./assets/pencil-square.svg");
+}
+
+.modify-button:hover {
+    background-image: url("./assets/pencil-square-filled.svg");
+}
+
+.delete-button {
+    background-image: url("./assets/trash.svg");
+}
+
+.delete-button:hover {
+    background-image: url("./assets/trash-filled.svg");
+}
+
+#todo-popup {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    z-index: 3;
+    width: 750px;
+    height: 200px;
+    max-width: 60%;
+    display: none;
+}
+
+#todo-popup.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#overlay {
+    display: none;
+}
+
+#overlay.active {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .2); 
+}
+
+.todo-form {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.todo-input, .details-input {
+    width: 715px;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.action-buttons {
+    padding: 10px 15px;
+    align-self: flex-end;
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 5px 10px;
+}
+
+#sidebar {
+    display: none;
+}
+
+#sidebar.active {
+    display: block;
+    background: var(--gray);
+    grid-row : 2 / 3;
+    grid-column: 1 / 2;
+}
+
+#sidebar > div {
+    padding: 20px 30px;
+}
+
+#sidebar h3 {
+    font-weight: 400;
+}
+
+#sidebar-home > div, 
+#sidebar-projects > div {
+    padding: 10px 15px;
+}
+
+#sidebar-projects > button, 
+#sidebar-projects > form {
+    margin: 10px 15px;
+}
+
+#sidebar-home-projects > div {
+    margin: 15px 20px;
+}
+
+#sidebar-all-projects > div {
+    margin: 10px 20px;
+    display: flex;
+    gap: 25px;
+}
+
+.modify-project-input {
+    display: none;
+}
+
+.modify-project-input.active {
+    display: block;
+}
+
+#sidebar-all-projects h3.hidden {
+    display: none;
+}
+
+#home-icon-and-header, 
+#projects-icons-and-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+#home-icon-and-header img,
+#projects-icons-and-header img {
+    width: 30px;
+    height: 30px;
+}
+
+#projects-icons-and-header button,
+.project-form .input-and-buttons-div button {
+    border: none;
+    background-color: transparent;
+    background-image: url("./assets/plus-circle.svg");
+    background-size: cover;
+    width: 25px;
+    height: 25px; 
+}
+
+.project-form {
+    display: none;
+}
+
+.project-form.active {
+    display: block;
+}
+
+.project-form .input-and-buttons-div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#sidebar-home-projects > div, 
+#sidebar-all-projects > div {
+    cursor: pointer;
+}
+
+#sidebar-home-projects > div:hover, 
+#sidebar-all-projects > div:hover {
+    color: var(--blue);
+}
+
+#body {
+    background-image: url("./assets/lined-notebook-paper.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    grid-row: 2 / 3;
+    grid-column: 1 / 3;
+    display: grid;
+    overflow: auto;
+    gap: 5px;
+    padding: 5px;
+    grid-template-rows: 12% 50px repeat(auto-fit, minmax(75px, 0.1fr));
+    grid-template-columns: 1.1fr 1fr 1fr;
+    row-gap: 5px;
+}
+
+#body.smaller{
+    grid-column: 2 / 3;
+}
+
+#body h2 {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    font-size: 180%;
+}
+
+#body > div {
+    grid-column: 2 / 3;
+}
+
+#body .outer-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#body .buttons-and-title {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.todo-dropdown-button {
+    display: none;
+}
+
+.todo-dropdown-button.details {
+    display: block;
+    border: none;
+    background-color: transparent;
+    background-image: url("./assets/chevron-right.svg");
+    background-size: cover;
+    width: 20px;
+    height: 20px; 
+}
+
+.todo-dropdown-button.details.active {
+    background-image: url("./assets/chevron-down.svg");
+}
+
+.completed-button {
+    display: block;
+    border: none;
+    background-color: transparent;
+    background-image: url("./assets/check-circle.svg");
+    background-size: cover;
+    width: 20px;
+    height: 20px;  
+}
+
+.completed-button.active {
+    background-image: url("./assets/check-circle-filled.svg");
+}
+
+.due-date-delete-button {
+    display: flex;
+    gap: 5px;
+}
+
+.todo-delete-button {
+    background-image: url("./assets/trash.svg");
+    display: block;
+    border: none;
+    background-color: transparent;
+    background-size: cover;
+    width: 20px;
+    height: 20px; 
+}
+
+#body .todo-title {
+    font-size: 150%;
+    font-family: 'Zilla Slab', serif;
+}
+
+#body .todo-details {
+    display: none;
+}
+
+#body .todo-details.active {
+    display: block;
+    padding: 5px;
+}
+
+#footer {
+    grid-row: 3 / 4;
+    grid-column: 1 / -1;
+    background: var(--green);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#credits {
+    display: flex;
+    gap: 10px;
+}
