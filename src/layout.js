@@ -11,7 +11,7 @@ projectCollection.loadFromLocalStorage();
 let allProjects = projectCollection.projects;
 
 // defined so we don't include them in the "Projects" section AND "Home" section
-const specialHomeProjects = ["Inbox", "Today", "Next 7 Days"];
+const specialHomeProjects = ["Inbox"];
 
 // defines header to display page title
 function createHeader() {
@@ -206,8 +206,8 @@ function createDetailedTodoForm() {
 // loads all available projects - "Today" and "Next 7 Days"
 // as an option in the detailed ToDos menu
 function loadProjectDropdown() {
-    // rest of projects that are not "Inbox", "Today" or "Next 7 Days"
-    let projectOptions = allProjects.slice(3);
+    // rest of projects that are not in specialHomeProjects
+    let projectOptions = allProjects.slice(specialHomeProjects.length);
 
     let alreadyDisplayedProjects = [];
 
@@ -235,10 +235,12 @@ function loadProjectDropdown() {
 // located in the header
 function addQuickTodo() {
     let quickTodoInput = document.getElementById("todo-quick-input");
-    const todo = new ToDo(quickTodoInput.value);
-    quickTodoInput.value = '';
-    projectCollection.addTodo("Inbox", todo);
-    projectCollection.saveToLocalStorage();
+    if (quickTodoInput.value != '') {
+        const todo = new ToDo(quickTodoInput.value);
+        quickTodoInput.value = '';
+        projectCollection.addTodo("Inbox", todo);
+        projectCollection.saveToLocalStorage();
+    }
 }
 
 // EL function used to add a detailed ToDo to any project of choice
@@ -320,7 +322,7 @@ function createSidebar() {
     const sidebarHomeProjectsDiv = document.createElement("div");
     sidebarHomeProjectsDiv.setAttribute("id", "sidebar-home-projects");
 
-    // Inbox, Today, Next 7 Days
+    // Inbox
     const homeProjectDivs = loadHomeProjectDivs();
     for (const projectDiv of homeProjectDivs) {
         sidebarHomeProjectsDiv.appendChild(projectDiv);
@@ -373,7 +375,7 @@ function createSidebar() {
     return sidebarDiv;
 }
 
-// loads the divs containing "Inbox", "Today", "Next 7 Days"
+// loads the div containing "Inbox"
 function loadHomeProjectDivs() {
     let homeProjectDivs = [];
     for (const projName of specialHomeProjects) {
@@ -479,6 +481,9 @@ function createProjectDiv(project, section) {
     });
 
     if (section == "projects") {
+        const modifyDiv = document.createElement("div");
+        modifyDiv.classList.add("modify-contents");
+
         const modifyForm = document.createElement("input");
         modifyForm.classList.add("modify-project-input");
         modifyForm.setAttribute("type", "text");
@@ -498,10 +503,12 @@ function createProjectDiv(project, section) {
             deleteProject(event, project.title);
         });
     
+        modifyDiv.appendChild(modifyForm);
+        modifyDiv.appendChild(modifyButton);
+        modifyDiv.appendChild(deleteButton);
+
         projectDiv.appendChild(projectHeader);
-        projectDiv.appendChild(modifyForm);
-        projectDiv.appendChild(modifyButton);
-        projectDiv.appendChild(deleteButton);
+        projectDiv.appendChild(modifyDiv);
     } else {
         projectDiv.appendChild(projectHeader);
     }
@@ -550,7 +557,7 @@ function displayTodos(event, project) {
 
     const allProjectTodos = project.todos;
 
-    // empty div to line up ToDos in body
+    // empty div to line up ToDos in grid
     const emptyDiv = document.createElement("div");
     bodyDiv.appendChild(emptyDiv);
 
@@ -563,19 +570,93 @@ function displayTodos(event, project) {
         const todoDiv = document.createElement("div");
         todoDiv.setAttribute("id", todo.title);
 
+        const outerDiv = document.createElement("div");
+        outerDiv.classList.add("outer-div");
+
+        const buttonsAndTitleDiv = document.createElement("div");
+        buttonsAndTitleDiv.classList.add("buttons-and-title");
+
+        const dropdownButton = document.createElement("button");
+        dropdownButton.classList.add("todo-dropdown-button");
+        dropdownButton.setAttribute("type", "button");
+        dropdownButton.addEventListener("click", (event) => {
+            showTodoDropdownDiv(event, dropdownButton, todoDiv);
+        });
+
+        const completedButton = document.createElement("button");
+        completedButton.classList.add("completed-button");
+        completedButton.setAttribute("type", "button");
+        completedButton.addEventListener("click", (event) => {
+            toggleTodoStatus(event, todoDiv, project, completedButton);
+        });
+        if (todo.completed) {
+            completedButton.classList.add("active");
+        }
+
         const titleDiv = document.createElement("div");
-        titleDiv.classList.add("project-title-div");
+        titleDiv.classList.add("todo-title");
         titleDiv.textContent = todo.title;
 
+        const dueDateAndDeleteButtonDiv = document.createElement("div");
+        dueDateAndDeleteButtonDiv.classList.add("due-date-delete-button");
+
         const dueDateDiv = document.createElement("div");
-        dueDateDiv.classList.add("due-date-div");
+        dueDateDiv.classList.add("due-date");
         dueDateDiv.textContent = todo.dueDate;
 
-        todoDiv.appendChild(titleDiv);
-        todoDiv.appendChild(dueDateDiv);
+        dueDateAndDeleteButtonDiv.appendChild(dueDateDiv);
 
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add("todo-delete-button");
+        deleteButton.setAttribute("type", "button");
+        deleteButton.addEventListener("click", (event) => {
+            deleteTodo(event, todoDiv, project);
+        });
+
+        dueDateAndDeleteButtonDiv.appendChild(deleteButton);
+
+        buttonsAndTitleDiv.appendChild(dropdownButton);
+        buttonsAndTitleDiv.appendChild(completedButton);
+        buttonsAndTitleDiv.appendChild(titleDiv);
+        
+        outerDiv.appendChild(buttonsAndTitleDiv);
+        outerDiv.appendChild(dueDateAndDeleteButtonDiv);
+
+        todoDiv.appendChild(outerDiv);
+
+        if (todo.details) {
+            dropdownButton.classList.add("details");
+            const detailsDiv = document.createElement("div");
+            detailsDiv.classList.add("todo-details");
+            detailsDiv.textContent = todo.details;
+            todoDiv.appendChild(detailsDiv);
+        }
+        
         bodyDiv.appendChild(todoDiv);
     }
+}
+
+// EL function to show ToDo dropdown menu on arrow button click
+function showTodoDropdownDiv(event, dropdownButton, todoDiv) {
+    const detailsDiv = todoDiv.children[1];
+    if(detailsDiv) {
+        detailsDiv.classList.toggle("active");
+        dropdownButton.classList.toggle("active");
+    }
+}
+
+// EL function used to toggle the status of a ToDo between done/not done
+function toggleTodoStatus(event, todoDiv, project, completedButton) {
+    const todo = projectCollection.getTodo(project.title, todoDiv.id);
+    todo.completed = !todo.completed;
+    console.log(todo.completed);
+    completedButton.classList.toggle("active");
+}
+
+// EL function used to delete a ToDo from ProjectCollection and body
+function deleteTodo(event, todoDiv, project) {
+    projectCollection.deleteTodo(project.title, todoDiv.id);
+    todoDiv.parentNode.removeChild(todoDiv);
 }
 
 // defines the body of the page that holds main ToDo items
@@ -597,6 +678,36 @@ function createOverlay() {
 function createFooter() {
     const footerDiv = document.createElement("div");
     footerDiv.setAttribute("id", "footer");
+
+    const creditsDiv = document.createElement("div");
+    creditsDiv.setAttribute("id", "credits");
+
+    const iconCreditsDiv = document.createElement("div");
+    iconCreditsDiv.setAttribute("id", "icon-credits");
+
+    iconCreditsDiv.textContent = "Icons from ";
+
+    const iconLink = document.createElement("a");
+    iconLink.setAttribute("href", "https://heroicons.com/");
+    iconLink.textContent = "heroicons";
+
+    iconCreditsDiv.appendChild(iconLink);
+
+    const notebookCreditsDiv = document.createElement("div");
+    notebookCreditsDiv.setAttribute("id", "notebook-credits");
+
+    notebookCreditsDiv.textContent = "Notebook image from ";
+
+    const notebookLink = document.createElement("a");
+    notebookLink.setAttribute("href", "");
+    notebookLink.textContent = "rawpixel.com on Freepik";
+
+    notebookCreditsDiv.appendChild(notebookLink);
+
+    creditsDiv.appendChild(iconCreditsDiv);
+    creditsDiv.appendChild(notebookCreditsDiv);
+
+    footerDiv.appendChild(creditsDiv);
 
     return footerDiv;
 }

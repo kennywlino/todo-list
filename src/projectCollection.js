@@ -20,8 +20,6 @@ export default class ProjectCollection {
     // adds in Inbox, Today, and Next 7 Days 
     addDefaultProjects() {
         this._projects.push(new Project('Inbox'));
-        this._projects.push(new Project('Today'));
-        this._projects.push(new Project('Next 7 Days'));
     }
     
     addNewProject(proj) {
