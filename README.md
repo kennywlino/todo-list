@@ -1,10 +1,10 @@
 # todo-list
 
-** Overview
+## Overview
 
 This project was completed as a part of [The Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list). 
 
-** How To Use
+## How To Use
 
 ToDo List can be accessed at [kennywlino.github.io/todo-list/](https://kennywlino.github.io/todo-list/).
 
